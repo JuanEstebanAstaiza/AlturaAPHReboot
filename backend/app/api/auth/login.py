@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
 from app.services.auth_service import AuthService
 from app.config import get_settings
-from app.core.entities import LoginRequest, LoginResponse, TenantInfo, MyAccessInfo
+from app.core.entities import LoginRequest, LoginResponse, TenantInfo, MyAccessInfo, RegisterRequest, TenantSelectRequest
 from app.core.exceptions import AuthenticationError, AuthorizationError
 from app.repositories.user_repository import UserRepository
 
@@ -30,7 +31,13 @@ async def login(
         )
 
     # Verify password
-    if not auth_service.verify_password(request.password, user.password_hash):
+    try:
+        if not auth_service.verify_password(request.password, user.password_hash):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid email or password",
+            )
+    except ValueError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
@@ -59,7 +66,7 @@ async def login(
 
 @router.post("/register")
 async def register(
-    request: "app.core.entities.RegisterRequest",
+    request: RegisterRequest,
     db: Session = Depends(get_db),
 ):
     """Register a new user. Returns user info."""
@@ -70,7 +77,7 @@ async def register(
 
 @router.post("/refresh")
 async def refresh_token(
-    credentials: "fastapi.security.HTTPAuthorizationCredentials" = Depends(),
+    credentials: HTTPAuthorizationCredentials = Depends(),
 ):
     """Refresh access token using refresh token."""
     # TODO: implement token refresh
@@ -130,7 +137,7 @@ async def get_resident_my_access(
 
 @router.post("/tenant-select")
 async def tenant_select(
-    request: "app.core.entities.TenantSelectRequest",
+    request: TenantSelectRequest,
     current_user: dict = Depends(get_db),  # TODO: fix dependency
 ):
     """Select a tenant context. Returns new JWT with tenant scope."""

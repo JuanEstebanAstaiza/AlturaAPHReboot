@@ -73,23 +73,22 @@ INSERT INTO unit_types (name, description) VALUES
 ('Studio', 'Unidad habitacional tipo studio');
 
 -- Superuser account
--- Password hash for 'SuperAPH2026!' (bcrypt, $2b$12$)
--- Generated with: bcrypt.hashpw(b'SuperAPH2026!', bcrypt.gensalt())
+-- Password hash for 'SuperAPH2026!'
 INSERT INTO users (email, password_hash, name, phone, id_number, is_active)
 VALUES
-('super@aph.com', '$2b$12$LQ3rKw5VfJ8YnXzKp1qG2eR7tM9sN0oP4aB6cD8dF0gH2jK4lM6nO', 'Superusuario', '+57 300 123 4567', '000000', true);
+('super@aph.com', '$2b$12$SSd70TDaMfbDs8dEDMasluhmDklhY5NBvjRXgAqzMXcW/v6dKbBcO', 'Superusuario', '+57 300 123 4567', '000000', true);
 
 -- Admin of Conjunto Altah
 -- Password hash for 'Admin2026!'
 INSERT INTO users (email, password_hash, name, phone, id_number, is_active)
 VALUES
-('admin@altah.com', '$2b$12$Xz8Kw2VfJ5YnXzKp1qG2eR7tM9sN0oP4aB6cD8dF0gH2jK4lM6nO', 'Carlos Admin', '+57 310 234 5678', '12345678', true);
+('admin@altah.com', '$2b$12$yC0FP2R3woy7cpZJ0b.f5.CG28Ub1Kn73IxO/uG6AkzJ9RFDujlWS', 'Carlos Admin', '+57 310 234 5678', '12345678', true);
 
 -- Resident of Conjunto Altah
 -- Password hash for 'Resident2026!'
 INSERT INTO users (email, password_hash, name, phone, id_number, is_active)
 VALUES
-('resident@altah.com', '$2b$12$Ab3Kw9VfJ2YnXzKp1qG2eR7tM9sN0oP4aB6cD8dF0gH2jK4lM6nO', 'Maria Residente', '+57 320 345 6789', '87654321', true);
+('resident@altah.com', '$2b$12$5ia8dIqANC5xiTrZoiehJeZGpksM92E0R3hpM9uKEhQtorTP0bIhS', 'Maria Residente', '+57 320 345 6789', '87654321', true);
 
 -- Assign roles
 INSERT INTO user_roles (user_id, role_id) VALUES

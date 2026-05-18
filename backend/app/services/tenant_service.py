@@ -1,4 +1,4 @@
-from typing import Optional, list
+from typing import Optional
 from app.config import Settings
 from app.core.constants import SUBSCRIPTION_PLANS
 from app.core.exceptions import TenantNotFoundError, TenantLimitExceededError, FeatureNotAvailableError
@@ -15,7 +15,7 @@ class TenantService:
             return False
         return plan.get("features", {}).get(feature, False)
 
-    def check_max_tenants(self, user_id: int, plan_id: int) -> bool:
+    def check_max_tenants(self, user_id: int, plan_id: int) -> bool:  # type: ignore[unused-import]
         """Check if admin has exceeded max tenants for their plan."""
         # TODO: query database to count current tenants for this user
         # For MVP placeholder, assume unlimited

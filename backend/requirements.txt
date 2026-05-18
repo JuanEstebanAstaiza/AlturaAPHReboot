@@ -11,6 +11,7 @@ psycopg2-binary>=2.9.9
 # Auth
 PyJWT>=2.9.0
 bcrypt>=4.2.0
+email-validator>=2.3.0
 
 # Email
 aiosmtpd>=1.4.6

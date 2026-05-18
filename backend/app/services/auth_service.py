@@ -14,7 +14,7 @@ class AuthService:
     def create_access_token(self, user_id: int, role: str, **extra_claims) -> str:
         """Create JWT access token with user info and optional tenant scope."""
         payload = {
-            "sub": user_id,
+            "sub": str(user_id),
             "role": role,
             "exp": datetime.now(timezone.utc) + timedelta(minutes=self.settings.JWT_ACCESS_EXPIRE_MINUTES),
             "iat": datetime.now(timezone.utc),
@@ -25,7 +25,7 @@ class AuthService:
     def create_refresh_token(self, user_id: int, role: str) -> str:
         """Create JWT refresh token."""
         payload = {
-            "sub": user_id,
+            "sub": str(user_id),
             "role": role,
             "type": "refresh",
             "exp": datetime.now(timezone.utc) + timedelta(days=self.settings.JWT_REFRESH_EXPIRE_DAYS),

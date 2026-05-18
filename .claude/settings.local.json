@@ -7,7 +7,14 @@
       "WebFetch(domain:dribbble.com)",
       "WebFetch(domain:www.figma.com)",
       "WebFetch(domain:tailwindui.com)",
-      "WebFetch(domain:fireship.dev)"
+      "WebFetch(domain:fireship.dev)",
+      "PowerShell(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(pip install *)",
+      "Bash(pytest tests/ -v)",
+      "Bash(python *)",
+      "Bash(pip show *)"
     ]
   }
 }
