@@ -1,0 +1,46 @@
+# FastAPI
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+
+# Database
+SQLAlchemy>=2.0.35
+psycopg2-binary>=2.9.9
+
+# Auth
+PyJWT>=2.9.0
+bcrypt>=4.2.0
+
+# Email
+aiosmtpd>=1.4.6
+Jinja2>=3.1.4
+
+# PDF
+ReportLab>=4.2.0
+
+# Redis
+redis>=5.1.0
+aioredis>=2.0.1
+
+# Scheduler
+APScheduler>=3.10.4
+
+# Logging
+structlog>=24.4.0
+
+# File handling
+python-multipart>=0.0.17
+
+# Testing
+pytest>=8.3.3
+httpx>=0.27.2
+pytest-asyncio>=0.24.0
+pytest-cov>=6.0.0
+
+# QR
+qrcode>=8.0
+
+# Excel/CSV
+openpyxl>=3.1.5
+pandas>=2.2.3
