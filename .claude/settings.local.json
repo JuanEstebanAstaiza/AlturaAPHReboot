@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:ui.dev)",
+      "WebFetch(domain:www.behance.net)",
+      "WebFetch(domain:dribbble.com)",
+      "WebFetch(domain:www.figma.com)",
+      "WebFetch(domain:tailwindui.com)",
+      "WebFetch(domain:fireship.dev)"
+    ]
+  }
+}
