@@ -1,0 +1,52 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getStoredToken, getCurrentTenant } from "@/lib/auth/store";
+import { isSuperuser, parseJWT } from "@/lib/auth/jwt";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { TopNav } from "@/components/layout/TopNav";
+
+export default function ResidentLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const [role, setRole] = useState<string>("");
+  const [tenantName, setTenantName] = useState<string>("");
+
+  useEffect(() => {
+    const token = getStoredToken();
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+    if (isSuperuser(token)) {
+      router.push("/superuser");
+      return;
+    }
+    const payload = parseJWT(token);
+    setRole(payload.role);
+    const tenant = getCurrentTenant();
+    if (!tenant) {
+      router.push("/login/tenant-select");
+      return;
+    }
+    setTenantName(tenant.name || "");
+  }, [router]);
+
+  if (!role) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Sidebar role={role} />
+      <div className="lg:pl-64">
+        <TopNav role={role} userName="Resident" tenantName={tenantName} />
+        <main className="p-4 lg:p-6">{children}</main>
+      </div>
+    </div>
+  );
+}

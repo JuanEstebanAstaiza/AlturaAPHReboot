@@ -14,7 +14,21 @@
       "Bash(pip install *)",
       "Bash(pytest tests/ -v)",
       "Bash(python *)",
-      "Bash(pip show *)"
+      "Bash(pip show *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\akali\\\\OneDrive\\\\Escritorio\\\\Altura PH\\\\Gestor APH\" -Recurse -Filter \"*.md\")",
+      "Bash(Select-Object FullName)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(claude mcp *)",
+      "Bash(npx create-next-app@latest frontend --typescript --tailwind --app --src-dir --import-alias \"@/*\" --no-turbopack)",
+      "Bash(npx tsc *)",
+      "Bash(npm install *)",
+      "Bash(npm list *)",
+      "PowerShell(New-Item *)",
+      "Bash(ls C:\\\\\\\\Users\\\\\\\\akali\\\\\\\\OneDrive\\\\\\\\Escritorio\\\\\\\\Altura PH\\\\\\\\Gestor APH\\\\\\\\frontend\\\\\\\\src\\\\\\\\app *)",
+      "Bash(ls \"C:\\\\\\\\Users\\\\\\\\akali\\\\\\\\OneDrive\\\\\\\\Escritorio\\\\\\\\Altura PH\\\\\\\\Gestor APH\\\\\\\\frontend\\\\\\\\src\\\\\\\\app\\\\\\\\login\")",
+      "Bash(ls \"C:\\\\\\\\Users\\\\\\\\akali\\\\\\\\OneDrive\\\\\\\\Escritorio\\\\\\\\Altura PH\\\\\\\\Gestor APH\\\\\\\\frontend\\\\\\\\src\\\\\\\\app\\\\\\\\superuser\")",
+      "Bash(ls \"C:\\\\\\\\Users\\\\\\\\akali\\\\\\\\OneDrive\\\\\\\\Escritorio\\\\\\\\Altura PH\\\\\\\\Gestor APH\\\\\\\\frontend\\\\\\\\src\\\\\\\\app\\\\\\\\admin\")",
+      "Bash(curl *)"
     ]
   }
 }
