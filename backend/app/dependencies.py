@@ -12,9 +12,16 @@ security = HTTPBearer()
 
 def get_db():
     """FastAPI dependency for database session."""
-    # TODO: implement SQLAlchemy session management
-    # For now, placeholder
-    yield None
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+
+    engine = create_engine("sqlite:///./aph_test.db", connect_args={"check_same_thread": False})
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 def get_current_user(

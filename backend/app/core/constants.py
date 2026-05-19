@@ -119,7 +119,7 @@ SUBSCRIPTION_PLANS = {
         "max_tenants": 10,
         "features": {
             "pqrs": True, "documents": True, "resident_portal": True, "reservations": True,
-            "assemblies": True, "convivencia": True, "admin_dashboard": True,
+            "assemblies": True, "convivencia": True, "access": True, "admin_dashboard": True,
         },
         "monthly_price": 150000,
     },

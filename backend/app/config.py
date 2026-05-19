@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql://aph_user:aph_pass@localhost:5432/aph_db"
     DATABASE_URL_SQLITE: str = "sqlite:///./aph_dev.db"
 
+    # Override for testing
+    TEST_DATABASE_URL: str = "sqlite:///./aph_test.db"
+
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"
 
