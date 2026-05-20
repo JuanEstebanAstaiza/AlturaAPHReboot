@@ -29,7 +29,8 @@
       "Bash(ls \"C:\\\\\\\\Users\\\\\\\\akali\\\\\\\\OneDrive\\\\\\\\Escritorio\\\\\\\\Altura PH\\\\\\\\Gestor APH\\\\\\\\frontend\\\\\\\\src\\\\\\\\app\\\\\\\\superuser\")",
       "Bash(ls \"C:\\\\\\\\Users\\\\\\\\akali\\\\\\\\OneDrive\\\\\\\\Escritorio\\\\\\\\Altura PH\\\\\\\\Gestor APH\\\\\\\\frontend\\\\\\\\src\\\\\\\\app\\\\\\\\admin\")",
       "Bash(curl *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(npx next *)"
     ]
   }
 }
