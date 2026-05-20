@@ -21,6 +21,8 @@ interface TopNavProps {
 }
 
 export function TopNav({ role, userName, tenantName, tenantPlan, className }: TopNavProps) {
+  const router = useRouter();
+
   return (
     <header className={cn("h-16 border-b border-border bg-card flex items-center justify-between px-6", className)}>
       {/* Left side */}
@@ -53,7 +55,12 @@ export function TopNav({ role, userName, tenantName, tenantPlan, className }: To
         </Button>
 
         {/* User */}
-        <UserMenu userName={userName} role={role} />
+        <div className="flex items-center gap-2">
+          <UserMenu userName={userName} role={role} />
+          <Button variant="ghost" size="sm" onClick={() => { clearToken(); router.push("/login"); }} className="h-9 w-9 p-0" title="Cerrar Sesión">
+            <LogOut className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </header>
   );
