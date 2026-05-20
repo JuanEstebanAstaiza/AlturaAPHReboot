@@ -121,3 +121,15 @@ INSERT INTO habitational_units (tenant_id, tower_id, unit_type_id, name_code, co
 -- Link resident to unit
 INSERT INTO resident_unit_link (resident_id, unit_id, start_date, is_primary)
 VALUES (1, 1, '2025-01-01', true);
+
+-- PQRS Categories for Conjunto Altah (tenant 1)
+INSERT INTO pqrs_categories (tenant_id, name, pqrs_type, default_assigned_user_id, escalation_timeout_hours)
+VALUES
+    (1, 'Mantenimiento', 'p', 2, 48),
+    (1, 'Mantenimiento', 'q', 2, 24),
+    (1, 'Mantenimiento', 'r', 2, 72),
+    (1, 'Mantenimiento', 's', 2, 24),
+    (1, 'Ruido', 'q', 2, 12),
+    (1, 'Ruido', 's', 2, 12),
+    (1, 'Sugerencia', 'r', 2, 72),
+    (1, 'Petición', 'p', 2, 48);

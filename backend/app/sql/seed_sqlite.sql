@@ -56,10 +56,10 @@ INSERT INTO users (id, email, password_hash, name, phone, id_number, created_at,
 (1, 'super@aph.com', '$2b$12$SSd70TDaMfbDs8dEDMasluhmDklhY5NBvjRXgAqzMXcW/v6dKbBcO', 'Superusuario', '+57 300 123 4567', '000000', '2026-01-01', '2026-01-01', 1),
 (2, 'admin@altah.com', '$2b$12$yC0FP2R3woy7cpZJ0b.f5.CG28Ub1Kn73IxO/uG6AkzJ9RFDujlWS', 'Carlos Admin', '+57 310 234 5678', '12345678', '2026-01-01', '2026-01-01', 1),
 (3, 'resident@altah.com', '$2b$12$5ia8dIqANC5xiTrZoiehJeZGpksM92E0R3hpM9uKEhQtorTP0bIhS', 'Maria Residente', '+57 320 345 6789', '87654321', '2026-01-01', '2026-01-01', 1),
-(4, 'admin2@torres.com', '$2b$12$SSd70TDaMfbDs8dEDMasluhmDklhY5NBvjRXgAqzMXcW/v6dKbBcO', 'Laura Admin Torres', '+57 311 234 5678', '23456789', '2026-03-01', '2026-03-01', 1),
+(4, 'admin2@torres.com', '$2b$12$p0xEy9evp4.JjvVg2kpAY.2spNdp9V8RvdfaEY/SMqYZvgLLiFGyG', 'Laura Admin Torres', '+57 311 234 5678', '23456789', '2026-03-01', '2026-03-01', 1),
 (5, 'admin3@palmas.com', '$2b$12$yC0FP2R3woy7cpZJ0b.f5.CG28Ub1Kn73IxO/uG6AkzJ9RFDujlWS', 'Diego Admin Palmas', '+57 312 345 6789', '34567890', '2026-04-01', '2026-04-01', 1),
-(6, 'resident2@torres.com', '$2b$12$5ia8dIqANC5xiTrZoiehJeZGpksM92E0R3hpM9uKEhQtorTP0bIhS', 'Pedro Residente Torres', '+57 321 456 7890', '45678901', '2026-03-01', '2026-03-01', 1),
-(7, 'resident3@palmas.com', '$2b$12$SSd70TDaMfbDs8dEDMasluhmDklhY5NBvjRXgAqzMXcW/v6dKbBcO', 'Ana Residente Palmas', '+57 322 567 8901', '56789012', '2026-04-01', '2026-04-01', 1);
+(6, 'resident2@torres.com', '$2b$12$syumNW/D1q5iEW5AMeokwecJb.malT4gTi9utwUY/sfo7FJRI3VHy', 'Pedro Residente Torres', '+57 321 456 7890', '45678901', '2026-03-01', '2026-03-01', 1),
+(7, 'resident3@palmas.com', '$2b$12$syumNW/D1q5iEW5AMeokwecJb.malT4gTi9utwUY/sfo7FJRI3VHy', 'Ana Residente Palmas', '+57 322 567 8901', '56789012', '2026-04-01', '2026-04-01', 1);
 
 -- User Roles
 INSERT INTO user_roles (user_id, role_id) VALUES
@@ -117,3 +117,14 @@ INSERT INTO resident_unit_link (id, resident_id, unit_id, parking_id, start_date
 (1, 1, 1, NULL, '2025-01-01', 1),
 (2, 2, 7, NULL, '2026-01-01', 1),
 (3, 3, 12, NULL, '2026-02-01', 1);
+
+-- PQRS Categories for Conjunto Altah (tenant 1)
+INSERT INTO pqrs_categories (id, tenant_id, name, pqrs_type, default_assigned_user_id, escalation_timeout_hours, created_at) VALUES
+(1, 1, 'Mantenimiento', 'p', 2, 48, '2026-01-01'),
+(2, 1, 'Mantenimiento', 'q', 2, 24, '2026-01-01'),
+(3, 1, 'Mantenimiento', 'r', 2, 72, '2026-01-01'),
+(4, 1, 'Mantenimiento', 's', 2, 24, '2026-01-01'),
+(5, 1, 'Ruido', 'q', 2, 12, '2026-01-01'),
+(6, 1, 'Ruido', 's', 2, 12, '2026-01-01'),
+(7, 1, 'Sugerencia', 'r', 2, 72, '2026-01-01'),
+(8, 1, 'Petición', 'p', 2, 48, '2026-01-01');

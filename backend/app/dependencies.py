@@ -9,17 +9,33 @@ from app.services.auth_service import AuthService
 
 security = HTTPBearer()
 
+# Shared SQLite engine for testing
+_test_engine = None
+
+
+def _get_test_engine():
+    global _test_engine
+    if _test_engine is None:
+        from sqlalchemy import create_engine
+        _test_engine = create_engine(
+            "sqlite:///./aph_test.db",
+            connect_args={"check_same_thread": False},
+            pool_size=20,
+            max_overflow=40,
+        )
+    return _test_engine
+
 
 def get_db():
     """FastAPI dependency for database session."""
-    from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 
-    engine = create_engine("sqlite:///./aph_test.db", connect_args={"check_same_thread": False})
+    engine = _get_test_engine()
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = SessionLocal()
     try:
         yield db
+        db.commit()
     finally:
         db.close()
 
