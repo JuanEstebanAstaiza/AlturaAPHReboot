@@ -10,12 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Search, Eye, Edit, Trash2 } from "lucide-react";
 
 interface Tenant {
-  tenant_id: number;
-  tenant_name: string;
-  plan: string;
-  subscription_status: string;
+  id: number;
+  name: string;
+  address?: string;
   total_units: number;
-  residents_count: number;
+  is_active: boolean;
 }
 
 export default function TenantsPage() {
@@ -39,7 +38,7 @@ export default function TenantsPage() {
     loadTenants();
   }, []);
 
-  const filtered = tenants.filter((t) => t.tenant_name.toLowerCase().includes(search.toLowerCase()));
+  const filtered = tenants.filter((t) => t.name.toLowerCase().includes(search.toLowerCase()));
 
   if (loading) {
     return (
@@ -88,31 +87,24 @@ export default function TenantsPage() {
                 <tr className="border-b border-border">
                   <th className="text-left py-3 px-4 font-medium text-muted-foreground">ID</th>
                   <th className="text-left py-3 px-4 font-medium text-muted-foreground">Nombre</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Plan</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Suscripción</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Dirección</th>
                   <th className="text-left py-3 px-4 font-medium text-muted-foreground">Unidades</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Residentes</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Estado</th>
                   <th className="text-left py-3 px-4 font-medium text-muted-foreground">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((t) => (
-                  <tr key={t.tenant_id} className="border-b border-border hover:bg-muted/50 transition-colors">
-                    <td className="py-3 px-4 text-muted-foreground">#{t.tenant_id}</td>
-                    <td className="py-3 px-4 font-medium text-foreground">{t.tenant_name}</td>
+                  <tr key={t.id} className="border-b border-border hover:bg-muted/50 transition-colors">
+                    <td className="py-3 px-4 text-muted-foreground">#{t.id}</td>
+                    <td className="py-3 px-4 font-medium text-foreground">{t.name}</td>
+                    <td className="py-3 px-4 text-muted-foreground truncate max-w-[150px]">{t.address || "—"}</td>
+                    <td className="py-3 px-4 text-foreground">{t.total_units}</td>
                     <td className="py-3 px-4">
-                      <Badge variant="secondary" className="capitalize">{t.plan}</Badge>
-                    </td>
-                    <td className="py-3 px-4">
-                      <Badge
-                        variant={t.subscription_status === "active" ? "default" : t.subscription_status === "expired" ? "destructive" : "warning"}
-                        className="capitalize"
-                      >
-                        {t.subscription_status}
+                      <Badge variant={t.is_active ? "default" : "destructive"}>
+                        {t.is_active ? "Active" : "Inactive"}
                       </Badge>
                     </td>
-                    <td className="py-3 px-4 text-foreground">{t.total_units}</td>
-                    <td className="py-3 px-4 text-foreground">{t.residents_count}</td>
                     <td className="py-3 px-4">
                       <div className="flex gap-2">
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><Eye className="h-4 w-4" /></Button>

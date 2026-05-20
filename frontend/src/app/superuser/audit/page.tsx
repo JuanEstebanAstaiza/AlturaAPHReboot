@@ -1,56 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { api } from "@/lib/api/client";
-import { getStoredToken } from "@/lib/auth/store";
+import { useState } from "react";
+import { useSuperuserAudit } from "@/hooks/useSuperuser";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Filter } from "lucide-react";
 
-interface AuditLog {
-  id: number;
-  tenant_id: number;
-  user_id: number;
-  action: string;
-  entity: string;
-  entity_id: number;
-  timestamp: string;
-  ip_address: string;
-}
-
 export default function AuditPage() {
-  const [loading, setLoading] = useState(true);
-  const [logs, setLogs] = useState<AuditLog[]>([]);
+  const { data: logs = [], isLoading, error } = useSuperuserAudit();
   const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    const loadLogs = async () => {
-      try {
-        const token = getStoredToken();
-        if (!token) return;
-        const data = await api.superuser.audit();
-        setLogs(data);
-      } catch {
-        // Silent fail
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadLogs();
-  }, []);
 
   const filtered = logs.filter(
     (l) =>
-      l.action.toLowerCase().includes(search.toLowerCase()) ||
-      l.entity.toLowerCase().includes(search.toLowerCase())
+      l.action?.toLowerCase().includes(search.toLowerCase()) ||
+      l.entity?.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-alert">Error loading audit logs</p>
       </div>
     );
   }

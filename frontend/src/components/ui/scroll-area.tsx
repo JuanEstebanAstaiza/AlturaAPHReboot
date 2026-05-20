@@ -6,7 +6,7 @@ export interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {}
 const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
   ({ className, children, ...props }, ref) => (
     <div ref={ref} className={cn("relative overflow-auto", className)} {...props}>
-      <div className="absolute top-0 bottom-0 left-0 right-0">{children}</div>
+      {children}
     </div>
   )
 );

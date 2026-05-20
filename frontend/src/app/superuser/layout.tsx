@@ -22,11 +22,11 @@ export default function SuperuserLayout({ children }: { children: React.ReactNod
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex">
       <Sidebar role="superuser" />
-      <div className="lg:pl-64">
-        <TopNav role="superuser" userName="Superuser" />
-        <main className="p-4 lg:p-6">{children}</main>
+      <div className="flex-1 flex flex-col min-w-0">
+        <TopNav role="superuser" userName="Superuser" className="sticky top-0 z-10" />
+        <main className="flex-1 p-4 lg:p-6">{children}</main>
       </div>
     </div>
   );

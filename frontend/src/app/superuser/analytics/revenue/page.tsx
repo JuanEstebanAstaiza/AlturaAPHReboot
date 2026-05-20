@@ -1,51 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { api } from "@/lib/api/client";
-import { getStoredToken } from "@/lib/auth/store";
+import { useSuperuserAnalytics } from "@/hooks/useSuperuser";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AreaChart, BarChart } from "@/components/ui/chart";
 import { DollarSign, TrendingUp, TrendingDown } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
 export default function RevenueAnalyticsPage() {
-  const [loading, setLoading] = useState(true);
-  const [revenueData, setRevenueData] = useState<any[]>([]);
-  const [byPlan, setByPlan] = useState<any[]>([]);
+  const { data: revenue, isLoading, error } = useSuperuserAnalytics();
 
-  useEffect(() => {
-    const loadRevenue = async () => {
-      try {
-        const token = getStoredToken();
-        if (!token) return;
-        setRevenueData([
-          { label: "Ene", value: 350000 },
-          { label: "Feb", value: 380000 },
-          { label: "Mar", value: 420000 },
-          { label: "Abr", value: 450000 },
-        ]);
-        setByPlan([
-          { label: "Free", value: 0 },
-          { label: "Basic", value: 15000 },
-          { label: "Professional", value: 25000 },
-          { label: "Enterprise", value: 5000 },
-        ]);
-      } catch {
-        // Silent fail
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadRevenue();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-alert">Error loading revenue data</p>
+      </div>
+    );
+  }
+
+  const monthlyRevenue = revenue?.monthly_revenue || [];
+  const byPlan = revenue?.by_plan || [];
+
+  const chartData = monthlyRevenue.length > 0
+    ? monthlyRevenue.map((m: any) => ({ label: m.month || m.label, value: m.revenue || m.amount || m.count || 0 }))
+    : [{ label: "No data", value: 0 }];
+
+  const planData = byPlan.length > 0
+    ? byPlan.map((p: any) => ({ label: p.plan || p.plan_name, value: p.revenue || p.count || p.amount || 0 }))
+    : [{ label: "No data", value: 0 }];
 
   return (
     <div className="space-y-6">
@@ -57,8 +46,8 @@ export default function RevenueAnalyticsPage() {
       {/* Revenue Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { label: "Ingresos Totales", value: formatCurrency(1250000), trend: "+18%", up: true, icon: <DollarSign className="h-5 w-5" /> },
-          { label: "MRR", value: formatCurrency(45000), trend: "+5%", up: true, icon: <TrendingUp className="h-5 w-5" /> },
+          { label: "Ingresos Totales", value: formatCurrency(revenue?.total_revenue || 0), trend: "+18%", up: true, icon: <DollarSign className="h-5 w-5" /> },
+          { label: "MRR", value: formatCurrency(revenue?.total_revenue || 0), trend: "+5%", up: true, icon: <TrendingUp className="h-5 w-5" /> },
           { label: "Churn Rate", value: "2.3%", trend: "-0.5%", up: true, icon: <TrendingDown className="h-5 w-5" /> },
         ].map((stat) => (
           <Card key={stat.label}>
@@ -81,7 +70,7 @@ export default function RevenueAnalyticsPage() {
             <CardTitle>Ingresos Mensuales</CardTitle>
           </CardHeader>
           <CardContent>
-            <AreaChart data={revenueData} />
+            <AreaChart data={chartData} />
           </CardContent>
         </Card>
         <Card>
@@ -89,7 +78,7 @@ export default function RevenueAnalyticsPage() {
             <CardTitle>Ingresos por Plan</CardTitle>
           </CardHeader>
           <CardContent>
-            <BarChart data={byPlan.length > 0 ? byPlan : [{ label: "Free", value: 0 }, { label: "Basic", value: 15000 }, { label: "Professional", value: 25000 }, { label: "Enterprise", value: 5000 }]} />
+            <BarChart data={planData} />
           </CardContent>
         </Card>
       </div>

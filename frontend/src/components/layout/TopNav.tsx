@@ -1,23 +1,28 @@
 "use client";
 
-import { Search, Bell, User } from "lucide-react";
+import { Search, Bell, User, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TenantBadge } from "@/components/layout/TenantBadge";
 import { TenantSwitcher } from "@/components/layout/TenantSwitcher";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { clearToken } from "@/lib/auth/store";
 
 interface TopNavProps {
   role: string;
   userName?: string;
   tenantName?: string;
   tenantPlan?: string;
+  className?: string;
 }
 
-export function TopNav({ role, userName, tenantName, tenantPlan }: TopNavProps) {
+export function TopNav({ role, userName, tenantName, tenantPlan, className }: TopNavProps) {
   return (
-    <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6">
+    <header className={cn("h-16 border-b border-border bg-card flex items-center justify-between px-6", className)}>
       {/* Left side */}
       <div className="flex items-center gap-4">
         {role !== "superuser" && role !== "resident" && (
@@ -48,14 +53,42 @@ export function TopNav({ role, userName, tenantName, tenantPlan }: TopNavProps) 
         </Button>
 
         {/* User */}
-        <div className="flex items-center gap-2">
+        <UserMenu userName={userName} role={role} />
+      </div>
+    </header>
+  );
+}
+
+function UserMenu({ userName, role }: { userName?: string; role: string }) {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    clearToken();
+    router.push("/login");
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <div className="flex items-center gap-2 cursor-pointer">
           <Avatar name={userName || "User"} />
           <div className="hidden md:block">
             <p className="text-sm font-medium text-foreground">{userName || "User"}</p>
             <p className="text-xs text-muted-foreground capitalize">{role}</p>
           </div>
         </div>
-      </div>
-    </header>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <div className="px-2 py-1.5 text-sm">
+          <p className="font-medium text-foreground">{userName || "User"}</p>
+          <p className="text-muted-foreground capitalize">{role}</p>
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={handleLogout} className="text-alert">
+          <LogOut className="h-4 w-4 mr-2" />
+          Cerrar Sesión
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

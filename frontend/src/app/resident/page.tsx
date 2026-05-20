@@ -1,72 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { api } from "@/lib/api/client";
-import { getStoredToken } from "@/lib/auth/store";
+import { useTenantStore } from "@/lib/auth/tenant-store";
+import { useUnitListings } from "@/hooks/useUnits";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building2, FileText, Wallet, Bell, Calendar, MessageSquare } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-
-interface Property {
-  id: number;
-  name: string;
-  tower: string;
-  unit_number: string;
-  plan: string;
-}
-
-interface Notification {
-  id: number;
-  title: string;
-  message: string;
-  type: string;
-  time: string;
-}
+import { useEffect } from "react";
 
 export default function ResidentHomePage() {
-  const [loading, setLoading] = useState(true);
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { init } = useTenantStore();
+  const { data: units = [], isLoading } = useUnitListings();
 
   useEffect(() => {
-    const loadResidentData = async () => {
-      try {
-        const token = getStoredToken();
-        if (!token) return;
+    init();
+  }, [init]);
 
-        const myAccess = await api.auth.myAccess();
-        setProperties(
-          myAccess?.map((p: any) => ({
-            id: p.tenant_id || p.unit_id,
-            name: p.tenant_name || p.property_name || "Mi Propiedad",
-            tower: p.tower || "",
-            unit_number: p.unit_number || "",
-            plan: p.plan || "free",
-          })) || []
-        );
-
-        setNotifications([
-          { id: 1, title: "Pago confirmado", message: "Tu pago de $2,500,000 ha sido procesado", type: "success", time: "Hace 1 hora" },
-          { id: 2, title: "Reunión de comité", message: "Próxima reunión el 15 de mayo", type: "info", time: "Hace 3 horas" },
-          { id: 3, title: "Mantenimiento programado", message: "Elevador Torre B este viernes", type: "warning", time: "Hace 1 día" },
-        ]);
-      } catch {
-        // Silent fail
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadResidentData();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
+
+  const currentUnit = units[0];
 
   return (
     <div className="space-y-6">
@@ -75,34 +33,38 @@ export default function ResidentHomePage() {
         <p className="text-muted-foreground">Bienvenido a tu panel de propiedad</p>
       </div>
 
-      {/* Properties */}
+      {/* Unit Info */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="flex items-center gap-2">
-            <Building2 className="h-5 w-5" />
-            Mis Propiedades
+            <Building2 className="h-5 w-5 text-primary" />
+            Tu Unidad
           </CardTitle>
+          <Badge variant="secondary" className="capitalize">
+            {currentUnit?.unit_type_name || currentUnit?.unit_type || "Apto"}
+          </Badge>
         </CardHeader>
         <CardContent>
-          {properties.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {properties.map((p) => (
-                <div key={p.id} className="p-4 rounded-lg border bg-card hover:border-primary/50 transition-colors">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-medium text-foreground">{p.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {p.tower && `${p.tower}, `}Apto {p.unit_number}
-                      </p>
-                    </div>
-                    <Badge variant="secondary" className="capitalize">{p.plan}</Badge>
-                  </div>
-                </div>
-              ))}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-xs text-muted-foreground">Apartamento</p>
+              <p className="text-lg font-bold text-foreground">{currentUnit?.unit_number || "—"}</p>
             </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">No tienes propiedades registradas.</p>
-          )}
+            <div>
+              <p className="text-xs text-muted-foreground">Torre</p>
+              <p className="text-lg font-bold text-foreground">{currentUnit?.tower_name || "—"}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Piso</p>
+              <p className="text-lg font-bold text-foreground">{currentUnit?.floor || "—"}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Estado</p>
+              <Badge variant={currentUnit?.occupied ? "default" : "secondary"} className="capitalize">
+                {currentUnit?.status || (currentUnit?.occupied ? "occupied" : "vacant")}
+              </Badge>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -114,18 +76,19 @@ export default function ResidentHomePage() {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
-              { icon: <Wallet className="h-5 w-5" />, label: "Pagos", color: "bg-primary/10 text-primary" },
-              { icon: <FileText className="h-5 w-5" />, label: "PQRS", color: "bg-accent/10 text-accent" },
-              { icon: <Calendar className="h-5 w-5" />, label: "Reservas", color: "bg-warning/10 text-warning" },
-              { icon: <MessageSquare className="h-5 w-5" />, label: "Comité", color: "bg-muted text-muted-foreground" },
+              { icon: <Wallet className="h-5 w-5" />, label: "Pagos", color: "bg-primary/10 text-primary", href: "#" },
+              { icon: <MessageSquare className="h-5 w-5" />, label: "PQRS", color: "bg-accent/10 text-accent", href: "/resident/pqrs" },
+              { icon: <Calendar className="h-5 w-5" />, label: "Reservas", color: "bg-warning/10 text-warning", href: "/resident/reservas" },
+              { icon: <FileText className="h-5 w-5" />, label: "Documentos", color: "bg-muted text-muted-foreground", href: "/resident/documents" },
             ].map((item) => (
-              <button
+              <a
                 key={item.label}
+                href={item.href}
                 className="flex flex-col items-center gap-2 p-4 rounded-lg border hover:border-primary/50 transition-colors text-sm"
               >
                 <div className={`h-10 w-10 rounded-lg ${item.color} flex items-center justify-center`}>{item.icon}</div>
                 <span className="text-foreground font-medium">{item.label}</span>
-              </button>
+              </a>
             ))}
           </div>
         </CardContent>
@@ -141,8 +104,12 @@ export default function ResidentHomePage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {notifications.map((n) => (
-              <div key={n.id} className="flex items-start gap-3 pb-3 border-b border-border last:border-0">
+            {[
+              { title: "Pago confirmado", message: "Tu pago ha sido procesado exitosamente", type: "success", time: "Hace 1 hora" },
+              { title: "Reunión de comité", message: "Próxima reunión el 15 de mayo", type: "info", time: "Hace 3 horas" },
+              { title: "Mantenimiento programado", message: "Elevador Torre B este viernes", type: "warning", time: "Hace 1 día" },
+            ].map((n, i) => (
+              <div key={i} className="flex items-start gap-3 pb-3 border-b border-border last:border-0">
                 <Badge variant={n.type === "success" ? "default" : n.type === "warning" ? "warning" : "secondary"}>
                   {n.type}
                 </Badge>

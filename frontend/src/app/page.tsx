@@ -16,7 +16,7 @@ export default function HomePage() {
       } else {
         const tenant = getCurrentTenant();
         if (tenant) {
-          router.push("/dashboard");
+          router.push("/admin");
         } else {
           router.push("/login/tenant-select");
         }

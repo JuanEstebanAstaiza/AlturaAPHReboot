@@ -1,88 +1,64 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { api } from "@/lib/api/client";
-import { getStoredToken } from "@/lib/auth/store";
+import { useUnitListings, useTowerList } from "@/hooks/useUnits";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AreaChart, PieChart, BarChart } from "@/components/ui/chart";
+import { AreaChart, PieChart } from "@/components/ui/chart";
 import { Building2, Users, DollarSign, AlertCircle, TrendingUp, TrendingDown, FileText, Plus } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
-interface KPI {
-  label: string;
-  value: string;
-  change: string;
-  trend: "up" | "down";
-  icon: React.ReactNode;
-}
-
 export default function AdminDashboardPage() {
-  const [loading, setLoading] = useState(true);
-  const [kpiData, setKpiData] = useState<KPI[]>([]);
-  const [chartData, setChartData] = useState<any[]>([]);
+  const { data: units = [], isLoading: loadingUnits } = useUnitListings();
+  const { data: towers = [], isLoading: loadingTowers } = useTowerList();
 
-  useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        const token = getStoredToken();
-        if (!token) return;
-
-        const units = await api.units.listings();
-        const towers = await api.units.towers();
-        setKpiData([
-          {
-            label: "Unidades Totales",
-            value: units.length.toString(),
-            change: "+2 this month",
-            trend: "up",
-            icon: <Building2 className="h-5 w-5" />,
-          },
-          {
-            label: "Torres",
-            value: towers.length.toString(),
-            change: "0 new",
-            trend: "up",
-            icon: <Users className="h-5 w-5" />,
-          },
-          {
-            label: "Ingresos Mes",
-            value: formatCurrency(2500000),
-            change: "+12%",
-            trend: "up",
-            icon: <DollarSign className="h-5 w-5" />,
-          },
-          {
-            label: "Pagos Pendientes",
-            value: "5",
-            change: "-3",
-            trend: "down",
-            icon: <AlertCircle className="h-5 w-5" />,
-          },
-        ]);
-
-        setChartData([
-          { label: "Ene", value: 2000000 },
-          { label: "Feb", value: 2200000 },
-          { label: "Mar", value: 2100000 },
-          { label: "Abr", value: 2500000 },
-        ]);
-      } catch {
-        // Silent fail — show empty state
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadDashboard();
-  }, []);
-
-  if (loading) {
+  if (loadingUnits || loadingTowers) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
+
+  const occupied = units.filter((u) => u.occupied || u.status === "occupied").length;
+  const vacant = units.length - occupied;
+
+  const kpis = [
+    {
+      label: "Unidades Totales",
+      value: units.length.toString(),
+      change: "+2 this month",
+      trend: "up" as const,
+      icon: <Building2 className="h-5 w-5" />,
+    },
+    {
+      label: "Torres",
+      value: towers.length.toString(),
+      change: "0 new",
+      trend: "up" as const,
+      icon: <Users className="h-5 w-5" />,
+    },
+    {
+      label: "Ocupadas",
+      value: occupied.toString(),
+      change: `${((occupied / (units.length || 1)) * 100).toFixed(0)}%`,
+      trend: "up" as const,
+      icon: <DollarSign className="h-5 w-5" />,
+    },
+    {
+      label: "Vacías",
+      value: vacant.toString(),
+      change: "—",
+      trend: "down" as const,
+      icon: <AlertCircle className="h-5 w-5" />,
+    },
+  ];
+
+  const chartData = [
+    { label: "Ene", value: 2000000 },
+    { label: "Feb", value: 2200000 },
+    { label: "Mar", value: 2100000 },
+    { label: "Abr", value: 2500000 },
+  ];
 
   return (
     <div className="space-y-6">
@@ -93,7 +69,7 @@ export default function AdminDashboardPage() {
 
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {kpiData.map((kpi) => (
+        {kpis.map((kpi) => (
           <Card key={kpi.label}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">{kpi.label}</CardTitle>
@@ -131,7 +107,7 @@ export default function AdminDashboardPage() {
             <CardTitle>Distribución de Unidades</CardTitle>
           </CardHeader>
           <CardContent>
-            <PieChart data={[{ label: "Ocupadas", value: 75 }, { label: "Vacías", value: 25 }]} />
+            <PieChart data={units.length > 0 ? [{ label: "Ocupadas", value: occupied }, { label: "Vacías", value: vacant }] : [{ label: "No data", value: 0 }]} />
           </CardContent>
         </Card>
       </div>
@@ -143,18 +119,18 @@ export default function AdminDashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+            <a href="/admin/units" className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
               <Plus className="h-4 w-4" />
               Nueva Unidad
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors text-sm">
+            </a>
+            <a href="/admin/residents" className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors text-sm">
               <Users className="h-4 w-4" />
               Registrar Residente
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 transition-colors text-sm">
+            </a>
+            <span className="flex items-center gap-2 px-4 py-2 bg-muted text-foreground rounded-lg text-sm opacity-50 cursor-not-allowed">
               <FileText className="h-4 w-4" />
               Generar Reporte
-            </button>
+            </span>
           </div>
         </CardContent>
       </Card>

@@ -43,7 +43,7 @@ function AreaChart({ data, title, className, height = 200 }: AreaChartProps) {
         {points.map((p, i) => (
           <g key={i}>
             <circle cx={p.x} cy={p.y} r="3" fill="#2563EB" />
-            <text x={p.x} y={height - 10} textAnchor="middle" className="text-xs fill-muted-foreground" fontSize="10">
+            <text x={p.x} y={height - 10} textAnchor="middle" fontSize="10" fill="#64748B">
               {data[i].label}
             </text>
           </g>
@@ -79,20 +79,22 @@ function PieChart({ data, title, className }: PieChartProps) {
   const cx = 100;
   const cy = 100;
 
-  const pathData = slices.map((s) => {
+  const slicesPath = slices.map((s) => {
     const x1 = cx + radius * Math.cos(s.startAngle * Math.PI / 180);
     const y1 = cy + radius * Math.sin(s.startAngle * Math.PI / 180);
     const x2 = cx + radius * Math.cos(s.endAngle * Math.PI / 180);
     const y2 = cy + radius * Math.sin(s.endAngle * Math.PI / 180);
     const largeArc = s.endAngle - s.startAngle > 180 ? 1 : 0;
     return `M ${cx} ${cy} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`;
-  }).join(" ");
+  });
 
   return (
     <div className={className}>
       {title && <h4 className="text-sm font-medium mb-2">{title}</h4>}
       <svg viewBox="0 0 200 200" className="w-full h-auto max-w-[200px] mx-auto">
-        <path d={pathData} stroke="#F8FAFC" strokeWidth="1" />
+        {slicesPath.map((d, i) => (
+          <path key={i} d={d} fill={slices[i].color} stroke="#e2e8f0" strokeWidth="1" />
+        ))}
         {slices.map((s, i) => (
           <text
             key={i}
@@ -101,7 +103,7 @@ function PieChart({ data, title, className }: PieChartProps) {
             textAnchor="middle"
             dominantBaseline="middle"
             fontSize="10"
-            fill="white"
+            fill="#1e293b"
             fontWeight="600"
           >
             {s.percentage}%

@@ -42,7 +42,11 @@ export default function TenantSelectPage() {
       const res = await api.auth.tenantSelect(tenantId);
       storeToken(res.access_token);
       storeTenant({ id: res.tenant_id, name: res.tenant_name, plan: res.plan, features: res.features || {} });
-      router.push("/dashboard");
+      if (role === "resident") {
+        router.push("/resident");
+      } else {
+        router.push("/admin");
+      }
     } catch {
       // Silently retry
     }
