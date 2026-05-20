@@ -139,6 +139,44 @@ export const api = {
     listings: () => request<any[]>("/api/units"),
     unitDetail: (id: number) => request<any>(`/api/units/${id}`),
   },
+  pqrs: {
+    tickets: (params?: Record<string, string>) => {
+      const search = new URLSearchParams(params);
+      return request<any[]>(`/api/pqrs/tickets?${search}`);
+    },
+    createTicket: (params: Record<string, string>) => {
+      const search = new URLSearchParams(params);
+      return request<any>(`/api/pqrs/tickets?${search}`, {
+        method: "POST",
+      });
+    },
+    ticket: (id: number) => request<any>(`/api/pqrs/tickets/${id}`),
+    updateStatus: (id: number, status: string) =>
+      request<any>(`/api/pqrs/tickets/${id}/status?status=${status}`, {
+        method: "PUT",
+      }),
+    assignTicket: (id: number, userId: number) =>
+      request<any>(`/api/pqrs/tickets/${id}/assign?user_id=${userId}`, {
+        method: "PUT",
+      }),
+    comments: (id: number) => request<any[]>(`/api/pqrs/tickets/${id}/comments`),
+    addComment: (id: number, message: string) =>
+      request<any>(`/api/pqrs/tickets/${id}/comments?message=${encodeURIComponent(message)}`, {
+        method: "POST",
+      }),
+    attachments: (id: number) => request<any[]>(`/api/pqrs/tickets/${id}/attachments`),
+    stats: () => request<any>("/api/pqrs/stats"),
+    categories: () => request<any[]>("/api/pqrs/categories"),
+    createCategory: (params: Record<string, string | number | undefined>) => {
+      const search = new URLSearchParams();
+      for (const [k, v] of Object.entries(params)) {
+        if (v !== undefined) search.set(k, String(v));
+      }
+      return request<any>(`/api/pqrs/categories?${search}`, {
+        method: "POST",
+      });
+    },
+  },
 };
 
 export function handleAuthResult(role: string): string {

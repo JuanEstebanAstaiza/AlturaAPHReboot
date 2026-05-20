@@ -142,3 +142,102 @@ export interface Booking {
   fee: number;
   created_at: string;
 }
+
+// PQRS types
+
+export interface PQRSTicket {
+  id: number;
+  ticket_number: string;
+  tenant_id: number;
+  type: "p" | "q" | "r" | "s";
+  status: "open" | "in_progress" | "escalated" | "closed";
+  priority: "low" | "medium" | "high" | "urgent";
+  title: string;
+  description: string;
+  created_by: number;
+  created_by_name: string | null;
+  assigned_to: number | null;
+  assigned_to_name: string | null;
+  created_at: string;
+  updated_at: string;
+  closed_at: string | null;
+}
+
+export interface PQRSTicketList {
+  id: number;
+  ticket_number: string;
+  type: string;
+  status: string;
+  priority: string;
+  title: string;
+  created_by_name: string | null;
+  assigned_to_name: string | null;
+  created_at: string;
+}
+
+export interface PQRSComment {
+  id: number;
+  ticket_id: number;
+  user_id: number;
+  user_name: string | null;
+  message: string;
+  created_at: string;
+}
+
+export interface PQRSAttachment {
+  id: number;
+  ticket_id: number;
+  file_name: string;
+  file_type: string | null;
+  file_size: number | null;
+  uploaded_by: number;
+  uploaded_by_name: string | null;
+  uploaded_at: string;
+}
+
+export interface PQRSCategory {
+  id: number;
+  tenant_id: number;
+  name: string;
+  pqrs_type: string;
+  default_assigned_user_id: number | null;
+  escalation_timeout_hours: number;
+  created_at: string;
+}
+
+export interface PQRSStats {
+  tenant_id: number;
+  total_tickets: number;
+  open_count: number;
+  in_progress_count: number;
+  escalated_count: number;
+  closed_count: number;
+  by_type: Record<string, number>;
+  by_priority: Record<string, number>;
+  by_status: Record<string, number>;
+}
+
+export type PQRSType = "p" | "q" | "r" | "s";
+export type PQRSStatus = "open" | "in_progress" | "escalated" | "closed";
+export type PQRSPriority = "low" | "medium" | "high" | "urgent";
+
+export const PQRS_TYPE_LABELS: Record<PQRSType, string> = {
+  p: "Petición",
+  q: "Queja",
+  r: "Reclamación",
+  s: "Sugerencia",
+};
+
+export const PQRS_STATUS_LABELS: Record<PQRSStatus, string> = {
+  open: "Abierta",
+  in_progress: "En Progreso",
+  escalated: "Escalada",
+  closed: "Cerrada",
+};
+
+export const PQRS_PRIORITY_LABELS: Record<PQRSPriority, string> = {
+  low: "Baja",
+  medium: "Media",
+  high: "Alta",
+  urgent: "Urgente",
+};
