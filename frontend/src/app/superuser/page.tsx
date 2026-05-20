@@ -46,7 +46,7 @@ export default function SuperuserDashboardPage() {
         {
           label: "Suscripciones Ativas",
           value: (dashboard.active_tenants || "0").toString(),
-          change: `${dashboard.subscriptions_by_plan?.length || 0} plans`,
+          change: `${Object.keys(dashboard.subscriptions_by_plan || {}).length} plans`,
           trend: "up" as const,
           icon: <Building2 className="h-5 w-5" />,
         },
@@ -61,16 +61,16 @@ export default function SuperuserDashboardPage() {
       : [];
 
   const chartData = dashboard?.subscriptions_by_plan
-    ? dashboard.subscriptions_by_plan.map((s: any) => ({ label: s.plan || s.plan_name || s.name, value: s.revenue || s.count || s.amount || 0 }))
+    ? Object.entries(dashboard.subscriptions_by_plan).map(([label, value]) => ({ label, value: Number(value) }))
     : tenants
       ? tenants.map((t) => ({ label: t.name || "Tenant", value: t.total_units || 0 }))
       : [];
 
   const subscriptionHealth = dashboard?.subscriptions_by_plan
-    ? dashboard.subscriptions_by_plan.map((s: any) => ({
-        label: SUBSCRIPTION_STATUS_LABELS[s.status] || s.status || "Unknown",
-        count: s.count || s.active || 0,
-        color: s.status === "active" ? "text-accent" : s.status === "expired" ? "text-alert" : s.status === "cancelled" ? "text-muted-foreground" : "text-warning",
+    ? Object.entries(dashboard.subscriptions_by_plan).map(([label, count]) => ({
+        label: SUBSCRIPTION_STATUS_LABELS[label] || label,
+        count: Number(count),
+        color: "text-accent",
       }))
     : [
         { label: "Active", count: tenants?.filter((t) => t.is_active).length || 0, color: "text-accent" },
@@ -153,21 +153,21 @@ export default function SuperuserDashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {(dashboard?.subscriptions_by_plan || [])
-              .filter((s: any) => s.status === "expired" || s.status === "cancelled")
+            {Object.entries(dashboard?.subscriptions_by_plan || {})
+              .filter(([label]) => label === "expired" || label === "cancelled")
               .slice(0, 4)
-              .map((s: any, i: number) => (
+              .map(([label, count], i) => (
                 <div key={i} className="flex items-center gap-3 pb-3 border-b border-border last:border-0">
-                  <Badge variant={s.status === "expired" ? "destructive" : "warning"}>
-                    {SUBSCRIPTION_STATUS_LABELS[s.status] || s.status}
+                  <Badge variant={label === "expired" ? "destructive" : "warning"}>
+                    {SUBSCRIPTION_STATUS_LABELS[label] || label}
                   </Badge>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">Suscripción {s.status}</p>
-                    <p className="text-xs text-muted-foreground truncate">{s.plan || s.plan_name || s.name || "Tenant"}</p>
+                    <p className="text-sm font-medium text-foreground">Suscripción {label}</p>
+                    <p className="text-xs text-muted-foreground truncate">{String(count)} plan(s)</p>
                   </div>
                 </div>
               ))}
-            {(dashboard?.subscriptions_by_plan || []).length === 0 && (
+            {Object.keys(dashboard?.subscriptions_by_plan || {}).length === 0 && (
               <p className="text-sm text-muted-foreground py-8 text-center">No hay alertas de suscripción.</p>
             )}
           </div>
