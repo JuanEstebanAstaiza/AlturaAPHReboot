@@ -8,6 +8,8 @@ from app.api.residents.linking import router as residents_link_router
 from app.api.units.towers import router as units_towers_router
 from app.api.units.listings import router as units_listings_router
 from app.api.pqrs.tickets import router as pqrs_router
+from app.api.superuser.plans import router as plans_router
+from app.api.superuser.admin_create import router as admin_create_router
 
 
 def include_routers(app):
@@ -20,3 +22,5 @@ def include_routers(app):
     app.include_router(units_towers_router)
     app.include_router(units_listings_router)
     app.include_router(pqrs_router)
+    app.include_router(plans_router)
+    app.include_router(admin_create_router)

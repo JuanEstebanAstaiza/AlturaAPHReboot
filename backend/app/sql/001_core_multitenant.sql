@@ -23,6 +23,7 @@ CREATE TABLE subscription_plans (
     code VARCHAR(50) UNIQUE NOT NULL,
     description TEXT,
     max_tenants INTEGER NOT NULL,
+    max_residents INTEGER NOT NULL DEFAULT 10,
     features JSONB NOT NULL,
     monthly_price DECIMAL(12,2) NOT NULL,
     status BOOLEAN DEFAULT true,

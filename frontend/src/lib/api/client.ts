@@ -98,9 +98,33 @@ export const api = {
       if (tenantId) params.set("tenant_id", String(tenantId));
       return request<any[]>(`/api/superuser/audit?${params}`);
     },
+    createAdmin: (data: { email: string; password: string; name: string; phone?: string; id_number?: string; tenant_id: number }) =>
+      request<any>("/api/superuser/admins/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }),
+    availableUsers: () => request<any[]>("/api/superuser/admins/available"),
     analytics: (tenantId: number) =>
       request<any>(`/api/superuser/analytics/usage?tenant_id=${tenantId}`),
     revenue: () => request<any>("/api/superuser/analytics/revenue"),
+    plans: () => request<any[]>("/api/superuser/plans"),
+    createPlan: (data: { name: string; code: string; description?: string; max_tenants: number; max_residents: number; features: Record<string, boolean>; monthly_price: number }) =>
+      request<any>("/api/superuser/plans", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }),
+    updatePlanDef: (planId: number, data: Record<string, any>) =>
+      request<any>(`/api/superuser/plans/${planId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }),
+    deactivatePlan: (planId: number) =>
+      request<any>(`/api/superuser/plans/${planId}`, {
+        method: "DELETE",
+      }),
   },
   tenants: {
     create: (data: { name: string; address?: string; total_units: number; plan_id: number }) =>

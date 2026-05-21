@@ -11,18 +11,19 @@ export interface AreaChartProps {
 }
 
 function AreaChart({ data, title, className, height = 200 }: AreaChartProps) {
-  if (!data.length) return <div className={cn("flex items-center justify-center text-muted-foreground", className)}>No data</div>;
+  const valid = data.filter((d) => typeof d.value === "number" && !isNaN(d.value) && isFinite(d.value));
+  if (!valid.length) return <div className={cn("flex items-center justify-center text-muted-foreground", className)}>No data</div>;
 
-  const maxVal = Math.max(...data.map((d) => d.value), 1);
+  const maxVal = Math.max(...valid.map((d) => d.value), 1);
   const width = 600;
   const padding = 40;
   const chartWidth = width - padding * 2;
   const chartHeight = height - padding;
 
-  const points = data.map((d, i) => {
-    const x = padding + (i / (data.length - 1)) * chartWidth;
+  const points = valid.map((d, i) => {
+    const x = padding + (i / (valid.length - 1)) * chartWidth;
     const y = height - padding - (d.value / maxVal) * chartHeight;
-    return { x, y };
+    return { x: Math.round(x * 100) / 100, y: Math.round(y * 100) / 100 };
   });
 
   const linePath = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
@@ -44,7 +45,7 @@ function AreaChart({ data, title, className, height = 200 }: AreaChartProps) {
           <g key={i}>
             <circle cx={p.x} cy={p.y} r="3" fill="#2563EB" />
             <text x={p.x} y={height - 10} textAnchor="middle" fontSize="10" fill="#64748B">
-              {data[i].label}
+              {valid[i].label}
             </text>
           </g>
         ))}
@@ -60,13 +61,14 @@ export interface PieChartProps {
 }
 
 function PieChart({ data, title, className }: PieChartProps) {
-  if (!data.length) return <div className={cn("flex items-center justify-center text-muted-foreground", className)}>No data</div>;
+  const valid = data.filter((d) => typeof d.value === "number" && !isNaN(d.value) && isFinite(d.value));
+  if (!valid.length) return <div className={cn("flex items-center justify-center text-muted-foreground", className)}>No data</div>;
 
-  const total = data.reduce((s, d) => s + d.value, 0);
+  const total = valid.reduce((s, d) => s + d.value, 0);
   const colors = ["#2563EB", "#059669", "#D97706", "#DC2626", "#3B82F6", "#8B5CF6", "#EC4899", "#14B8A6"];
 
   let cumulative = 0;
-  const slices = data.map((d, i) => {
+  const slices = valid.map((d, i) => {
     const startAngle = (cumulative / total) * 360;
     cumulative += d.value;
     const endAngle = (cumulative / total) * 360;
@@ -130,12 +132,13 @@ export interface BarChartProps {
 }
 
 function BarChart({ data, title, className, height = 200 }: BarChartProps) {
-  if (!data.length) return <div className={cn("flex items-center justify-center text-muted-foreground", className)}>No data</div>;
+  const valid = data.filter((d) => typeof d.value === "number" && !isNaN(d.value) && isFinite(d.value));
+  if (!valid.length) return <div className={cn("flex items-center justify-center text-muted-foreground", className)}>No data</div>;
 
-  const maxVal = Math.max(...data.map((d) => d.value), 1);
+  const maxVal = Math.max(...valid.map((d) => d.value), 1);
   const barWidth = 40;
   const gap = 16;
-  const totalWidth = data.length * (barWidth + gap);
+  const totalWidth = valid.length * (barWidth + gap);
   const padding = 40;
   const chartHeight = height - padding;
 
@@ -143,7 +146,7 @@ function BarChart({ data, title, className, height = 200 }: BarChartProps) {
     <div className={className}>
       {title && <h4 className="text-sm font-medium mb-2">{title}</h4>}
       <svg viewBox={`0 0 ${totalWidth + padding * 2} ${height}`} className="w-full h-auto">
-        {data.map((d, i) => {
+        {valid.map((d, i) => {
           const x = padding + i * (barWidth + gap);
           const barHeight = (d.value / maxVal) * chartHeight;
           const y = height - padding - barHeight;

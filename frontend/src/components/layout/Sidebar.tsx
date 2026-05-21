@@ -23,6 +23,7 @@ import {
   LayoutDashboard,
   FolderTree,
   TrendingUp,
+  CreditCard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -40,6 +41,8 @@ const sidebarItems: Record<string, { label: string; href: string; icon: React.Re
   superuser: [
     { label: "Dashboard", href: "/superuser", icon: <LayoutDashboard className="h-5 w-5" /> },
     { label: "Tenants", href: "/superuser/tenants", icon: <Building2 className="h-5 w-5" /> },
+    { label: "Planes", href: "/superuser/plans", icon: <CreditCard className="h-5 w-5" /> },
+    { label: "Administradores", href: "/superuser/admins", icon: <Users className="h-5 w-5" /> },
     { label: "Audit Logs", href: "/superuser/audit", icon: <ClipboardList className="h-5 w-5" /> },
     { label: "Analytics", href: "/superuser/analytics", icon: <BarChart3 className="h-5 w-5" /> },
     { label: "Revenue", href: "/superuser/analytics/revenue", icon: <TrendingUp className="h-5 w-5" /> },

@@ -3,14 +3,14 @@
 -- Execute after all DDL files
 
 -- Subscription Plans
-INSERT INTO subscription_plans (name, code, description, max_tenants, features, monthly_price) VALUES
-('Free', 'free', 'Plan básico con PQRS y documentos', 1,
+INSERT INTO subscription_plans (name, code, description, max_tenants, max_residents, features, monthly_price) VALUES
+('Free', 'free', 'Plan básico con PQRS y documentos', 1, 10,
  '{"pqrs": true, "documents": true, "resident_portal": true, "admin_dashboard": true}', 0),
-('Basic', 'basic', 'Plan básico con reservas incluidas', 3,
+('Basic', 'basic', 'Plan básico con reservas incluidas', 3, 50,
  '{"pqrs": true, "documents": true, "resident_portal": true, "reservations": true, "admin_dashboard": true}', 50000),
-('Professional', 'professional', 'Plan completo con asambleas y convivencia', 10,
+('Professional', 'professional', 'Plan completo con asambleas y convivencia', 10, 200,
  '{"pqrs": true, "documents": true, "resident_portal": true, "reservations": true, "assemblies": true, "convivencia": true, "admin_dashboard": true}', 150000),
-('Enterprise', 'enterprise', 'Plan enterprise con todos los módulos', 999999,
+('Enterprise', 'enterprise', 'Plan enterprise con todos los módulos', 999999, 999999,
  '{"pqrs": true, "documents": true, "resident_portal": true, "reservations": true, "assemblies": true, "convivencia": true, "financial": true, "access": true, "admin_dashboard": true, "superuser_access": true}', 500000);
 
 -- Roles

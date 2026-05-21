@@ -145,6 +145,53 @@ class AdminAssignment(BaseModel):
     user_id: int
 
 
+# --- Plan Schemas ---
+
+class PlanCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    code: str = Field(..., min_length=1, max_length=50)
+    description: Optional[str] = None
+    max_tenants: int = Field(..., ge=1)
+    max_residents: int = Field(..., ge=1)
+    features: dict = Field(..., min_length=1)
+    monthly_price: float = Field(..., ge=0)
+
+
+class PlanUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    max_tenants: Optional[int] = None
+    max_residents: Optional[int] = None
+    features: Optional[dict] = None
+    monthly_price: Optional[float] = None
+    status: Optional[bool] = None
+
+
+class PlanDetail(BaseModel):
+    id: int
+    name: str
+    code: str
+    description: Optional[str]
+    max_tenants: int
+    max_residents: int
+    features: dict
+    monthly_price: float
+    status: bool
+    active_tenants: int
+    created_at: datetime
+
+
+# --- Admin Creation Schema ---
+
+class AdminCreateRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(..., min_length=8)
+    name: str = Field(..., min_length=1)
+    phone: Optional[str] = None
+    id_number: Optional[str] = None
+    tenant_id: int
+
+
 # --- Superuser Schemas ---
 
 class SuperuserDashboard(BaseModel):
